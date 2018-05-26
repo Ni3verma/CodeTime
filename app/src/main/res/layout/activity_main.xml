@@ -8,38 +8,114 @@
 
     <android.support.v7.widget.CardView
         android:id="@+id/past"
-        style="@style/CardViewStyle"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        app:cardCornerRadius="5dp"
+        app:cardElevation="1.2dp"
+        app:cardMaxElevation="2dp"
+        app:contentPadding="5dp"
         app:layout_constraintBottom_toTopOf="@+id/onGoing"
         app:layout_constraintTop_toTopOf="parent">
+
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
             <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/past_sand_clock" />
+
             <TextView
+                android:id="@+id/past_events_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="Past Events"
-                />
-
+                android:layout_gravity="center"
+                android:background="@drawable/event_background"
+                android:elevation="3dp"
+                android:padding="5sp"
+                android:textColor="@color/whiteText"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                android:text="Past Events" />
         </FrameLayout>
     </android.support.v7.widget.CardView>
 
     <android.support.v7.widget.CardView
         android:id="@+id/onGoing"
-        style="@style/CardViewStyle"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        app:cardCornerRadius="0dp"
+        app:cardElevation="1.2dp"
+        app:cardMaxElevation="2dp"
+        app:contentPadding="5dp"
         app:layout_constraintBottom_toTopOf="@+id/future"
         app:layout_constraintTop_toBottomOf="@+id/past">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/present_sand_clock" />
+
+            <TextView
+                android:id="@+id/ongoing_events_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/event_background"
+                android:elevation="3dp"
+                android:padding="5sp"
+                android:textColor="@color/whiteText"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                android:text="OnGoing Events" />
+        </FrameLayout>
 
     </android.support.v7.widget.CardView>
 
     <android.support.v7.widget.CardView
         android:id="@+id/future"
-        style="@style/CardViewStyle"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        app:cardCornerRadius="5dp"
+        app:cardElevation="1.2dp"
+        app:cardMaxElevation="2dp"
+        app:contentPadding="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/onGoing">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="center"
+                android:src="@drawable/future_man_stop_clock" />
+
+            <TextView
+                android:id="@+id/future_events_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/event_background"
+                android:elevation="3dp"
+                android:padding="5sp"
+                android:textColor="@color/whiteText"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                android:text="UpComing Events" />
+        </FrameLayout>
 
     </android.support.v7.widget.CardView>
 
