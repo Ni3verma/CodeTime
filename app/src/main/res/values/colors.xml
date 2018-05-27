@@ -8,4 +8,11 @@
     <color name="primaryText">#212121</color>
     <color name="secondaryText">#757575</color>
     <color name="dividerColor">#bdbdbd</color>
+
+    <!--colors for event gradient-->
+    <color name="red_default">#f12711</color>
+    <color name="red_light">#f23c28</color>
+    <color name="yellow_default">#f5af19</color>
+    <color name="yellow_dark">#c48c14</color>
+
 </resources>
