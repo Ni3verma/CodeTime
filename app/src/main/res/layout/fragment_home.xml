@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Home">
+    tools:context=".HomeFragment">
 
     <android.support.v7.widget.CardView
         android:id="@+id/past"
@@ -91,7 +91,8 @@
         app:cardMaxElevation="2dp"
         app:contentPadding="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/onGoing">
+        app:layout_constraintTop_toBottomOf="@+id/onGoing"
+        android:onClick="futureCardViewClicked">
 
         <FrameLayout
             android:layout_width="match_parent"
