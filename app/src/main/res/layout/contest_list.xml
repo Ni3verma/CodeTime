@@ -1,14 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.RecyclerView
-
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/contest_list_rv"
+    android:id="@+id/frame_container"
     android:layout_height="match_parent"
-    android:layout_width="match_parent"
-    android:scrollbars="vertical"
-    android:background="@color/dividerColor"
-    tools:listitem="@layout/contest_list_row"
-    android:layoutAnimation="@anim/layout_animation_fall_down">
+    android:layout_width="match_parent">
+    <!--This image view will be used to hide the recycler view and display the blurred screesnshot of the screen just before peeking-->
+    <ImageView
+        android:id="@+id/bg_blur_iv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"/>
 
-</android.support.v7.widget.RecyclerView>
+    <android.support.v7.widget.RecyclerView
+
+
+        android:id="@+id/contest_list_rv"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:scrollbars="vertical"
+        android:background="@color/dividerColor"
+        tools:listitem="@layout/contest_list_row"
+        android:layoutAnimation="@anim/layout_animation_fall_down">
+
+    </android.support.v7.widget.RecyclerView>
+</FrameLayout>
