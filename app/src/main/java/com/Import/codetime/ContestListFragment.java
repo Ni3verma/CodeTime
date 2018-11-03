@@ -2,6 +2,7 @@ package com.Import.codetime;
 
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
@@ -15,15 +16,23 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.Toast;
+
+import com.Import.codetime.model.ApiResponse;
+import com.Import.codetime.rest.RestApiClient;
 
 import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -34,6 +43,7 @@ public class ContestListFragment extends Fragment {
     private ImageView image_background_blur;
     private Context mContext;
 
+    public static final String TAG = "Nitin";
 
     public ContestListFragment() {
         // Required empty public constructor
@@ -65,6 +75,36 @@ public class ContestListFragment extends Fragment {
         recyclerView.setAdapter(adapter);
         recyclerView.requestDisallowInterceptTouchEvent(true);
         recyclerView.addOnItemTouchListener(listener);
+
+        checkRestApi();
+    }
+
+    private void checkRestApi() {
+        try {
+            String name = getResources().getString(R.string.username);
+            String key = getResources().getString(R.string.key);
+            RestApiClient.setAuthParam(name, key);
+        } catch (Resources.NotFoundException ex) {
+            throw new RuntimeException("please provide username and APIkey");
+        }
+
+        Call<ApiResponse> response = RestApiClient.getInstance().getAllContests();
+        response.enqueue(new Callback<ApiResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<ApiResponse> call, @NonNull Response<ApiResponse> response) {
+                if (response.body() == null) {
+                    Log.e(TAG, "empty body");
+                } else {
+                    Log.d("Nitin", "contests size=" + response.body().getContests().size());
+                }
+
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ApiResponse> call, @NonNull Throwable t) {
+                Toast.makeText(mContext, "failure", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     //if we hold then drag our finger and then lift up....then dialog won't close
