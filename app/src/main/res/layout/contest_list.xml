@@ -21,7 +21,7 @@
         android:scrollbars="vertical"
         android:background="@color/dividerColor"
         tools:listitem="@layout/contest_list_row"
-        android:layoutAnimation="@anim/layout_animation_fall_down">
+        android:layoutAnimation="@anim/layout_animation_events_rv">
 
     </android.support.v7.widget.RecyclerView>
 </FrameLayout>
