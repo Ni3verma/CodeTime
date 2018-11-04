@@ -92,7 +92,37 @@ public class ContestListFragment extends Fragment {
             getPastEvents();
         } else if (type.equals(ONGOING_KEY)) {
             getOnGoingEvents();
+        } else if (type.equals(FUTURE_KEY)) {
+            getFutureEvents();
         }
+    }
+
+    private void getFutureEvents() {
+        String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date())
+                + "T"
+                + new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
+        String resourcesRegex = getFavouriteResourcesRegex();
+
+        Call<ApiResponse> response = RestApiClient.getInstance().getFutureContests(date, resourcesRegex, "start");
+        response.enqueue(new Callback<ApiResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<ApiResponse> call, @NonNull Response<ApiResponse> response) {
+                if (response.body() == null) {
+                    Log.d(TAG, "empty body");
+                } else {
+                    Log.d(TAG, "contests size=" + response.body().getContests().size());
+                    mList = response.body().getContests();
+                    EventListAdapter adapter = new EventListAdapter(mList, mContext, ContestListFragment.this);
+
+                    recyclerView.setAdapter(adapter);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ApiResponse> call, @NonNull Throwable t) {
+                Log.d(TAG, "failure");
+            }
+        });
     }
 
     private void getOnGoingEvents() {
@@ -101,7 +131,7 @@ public class ContestListFragment extends Fragment {
                 + new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
         String resourcesRegex = getFavouriteResourcesRegex();
 
-        Call<ApiResponse> response = RestApiClient.getInstance().getOnGoingContests(date, date, resourcesRegex, "-end");
+        Call<ApiResponse> response = RestApiClient.getInstance().getOnGoingContests(date, date, resourcesRegex, "end");
         response.enqueue(new Callback<ApiResponse>() {
             @Override
             public void onResponse(@NonNull Call<ApiResponse> call, @NonNull Response<ApiResponse> response) {

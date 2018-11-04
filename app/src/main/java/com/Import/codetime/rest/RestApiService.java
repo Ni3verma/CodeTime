@@ -24,4 +24,11 @@ public interface RestApiService {
             @Query(RestApiConstants.RESOURCE_NAME_REGEX_QUERY_PARAM) String resourceRegex,
             @Query(RestApiConstants.ORDER_BY_QUERY_PARAM) String orderBy
     );
+
+    @GET("contest")
+    Call<ApiResponse> getFutureContests(
+            @Query(RestApiConstants.START_DATE_GT_QUERY_PARAM) String date,
+            @Query(RestApiConstants.RESOURCE_NAME_REGEX_QUERY_PARAM) String resourceRegex,
+            @Query(RestApiConstants.ORDER_BY_QUERY_PARAM) String orderBy
+    );
 }

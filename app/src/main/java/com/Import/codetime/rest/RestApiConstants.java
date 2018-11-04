@@ -8,6 +8,7 @@ class RestApiConstants {
     static final String ORDER_BY_QUERY_PARAM = "order_by";
     static final String END_DATE_GT_QUERY_PARAM = "end__gt";
     static final String START_DATE_LT_QUERY_PARAM = "start__lt";
+    static final String START_DATE_GT_QUERY_PARAM = "start__gt";
 
     private RestApiConstants() {
     }
