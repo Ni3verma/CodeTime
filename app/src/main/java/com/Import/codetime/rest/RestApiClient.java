@@ -12,12 +12,12 @@ import okhttp3.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static com.Import.codetime.rest.RestApiConstants.API_BASE_URL;
+
 /**
  * Created by Nitin verma on 03/11/2018
  */
 public class RestApiClient {
-    private static final String API_BASE_URL = "https://clist.by/api/v1/json/";
-
     private static RestApiService restApiService = null;
     private static String mUserName = null;
     private static String mKey = null;
@@ -35,7 +35,7 @@ public class RestApiClient {
             // add api key in header of every request but first check if user has provided valid username and key. If username and key are not set then instance will not be made
             try {
                 if (mUserName == null || mKey == null) {
-                    throw new RuntimeException("set username/key by calling setAuthParam method.");
+                    throw new RuntimeException("set username/key by calling RestApiClient.setAuthParam method and pass in required parameters.");
                 }
             } catch (RuntimeException ex) {
                 Log.e("Error", ex.getMessage());

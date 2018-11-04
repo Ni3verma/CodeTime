@@ -43,7 +43,12 @@ public class ContestListFragment extends Fragment {
     private ImageView image_background_blur;
     private Context mContext;
 
-    public static final String TAG = "Nitin";
+    public static final String PAST_KEY = "past";
+    public static final String ONGOING_KEY = "ongoing";
+    public static final String FUTURE_KEY = "future";
+    public static final String EVENT_TYPE = "type";
+    private static final String TAG = "Nitin";
+
 
     public ContestListFragment() {
         // Required empty public constructor
@@ -76,10 +81,37 @@ public class ContestListFragment extends Fragment {
         recyclerView.requestDisallowInterceptTouchEvent(true);
         recyclerView.addOnItemTouchListener(listener);
 
-        checkRestApi();
+        Bundle arguments = getArguments();
+        assert arguments != null;
+        String type = arguments.getString(EVENT_TYPE);
+        assert type != null;
+
+        setAPICredentials();
+        if (type.equals(PAST_KEY)) {
+            getPastEvents();
+        }
     }
 
-    private void checkRestApi() {
+    private void getPastEvents() {
+        Call<ApiResponse> response = RestApiClient.getInstance().getPastContests("2018-11-04T00:00:01", "hackerrank.com|codechef.com", "-end");
+        response.enqueue(new Callback<ApiResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<ApiResponse> call, @NonNull Response<ApiResponse> response) {
+                if (response.body() == null) {
+                    Log.d(TAG, "empty body");
+                } else {
+                    Log.d(TAG, "contests size=" + response.body().getContests().size());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ApiResponse> call, @NonNull Throwable t) {
+                Log.d(TAG, "failure");
+            }
+        });
+    }
+
+    private void setAPICredentials() {
         try {
             String name = getResources().getString(R.string.username);
             String key = getResources().getString(R.string.key);
@@ -87,7 +119,9 @@ public class ContestListFragment extends Fragment {
         } catch (Resources.NotFoundException ex) {
             throw new RuntimeException("please provide username and APIkey");
         }
+    }
 
+    private void checkRestApi() {
         Call<ApiResponse> response = RestApiClient.getInstance().getAllContests();
         response.enqueue(new Callback<ApiResponse>() {
             @Override

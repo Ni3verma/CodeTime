@@ -47,10 +47,20 @@ public class HomeFragment extends Fragment {
         past_cv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentChangeListener fcl=(FragmentChangeListener) getActivity();
-                fcl.replaceFragment(new ContestListFragment());
+                setFragment(ContestListFragment.PAST_KEY);
             }
         });
+    }
+
+    private void setFragment(String contestTypeKey) {
+        FragmentChangeListener fcl = (FragmentChangeListener) getActivity();
+        ContestListFragment fragment = new ContestListFragment();
+
+        Bundle arguments = new Bundle();
+        arguments.putString(ContestListFragment.EVENT_TYPE, contestTypeKey);
+        fragment.setArguments(arguments);
+
+        fcl.replaceFragment(fragment);
     }
 
     void setTextViewAnimation(TextView tv){
