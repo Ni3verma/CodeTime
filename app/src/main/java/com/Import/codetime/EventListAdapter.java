@@ -48,7 +48,26 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.MyVi
         holder.eventName.setText(event.getEvent());
         holder.orgName.setText(event.getResource().getName());
 
+        holder.startDate = getFormattedDate(event.getStart());
+        holder.endDate = getFormattedDate(event.getEnd());
+    }
 
+    private String getFormattedDate(String date) {
+        String s[] = date.split("T"); //as response has time in this format yyyy:MM:ddThh:mm:ss, so we can split date and time at T. now s[0] contains date and s[1] contains time in 24 hour format
+
+        String time[] = s[1].split(":");
+        String marker = "AM";
+        int hour = Integer.parseInt(time[0]);
+        if (hour > 11) {
+            marker = "PM";
+            if (hour > 12) {
+                if (hour - 12 < 10)
+                    time[0] = "0" + (hour - 12); // eg: make it 09, instead of 9
+                else
+                    time[0] = hour - 12 + "";
+            }
+        }
+        return s[0] + "\n" + time[0] + ":" + time[1] + ":" + time[2] + " " + marker;
     }
 
     @Override
@@ -59,6 +78,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.MyVi
     class MyViewHolder extends RecyclerView.ViewHolder {
         TextView orgName, eventName;
         ImageView orgLogo;
+        String startDate, endDate;
 
         MyViewHolder(View itemView) {
             super(itemView);
@@ -80,6 +100,8 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.MyVi
                     ImageView logo_dialog=dialogLayout.findViewById(R.id.logo);
                     TextView orgName_dialog=dialogLayout.findViewById(R.id.org_name);
                     TextView eventName_dialog=dialogLayout.findViewById(R.id.event_name);
+                    TextView startDate_dialog = dialogLayout.findViewById(R.id.start_date);
+                    TextView endDate_dialog = dialogLayout.findViewById(R.id.end_date);
 
                     dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                     dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -94,6 +116,8 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.MyVi
 
                     orgName_dialog.setText(orgName.getText());
                     eventName_dialog.setText(eventName.getText());
+                    startDate_dialog.setText(startDate);
+                    endDate_dialog.setText(endDate);
 
                     mFragment.blurBackground();
 

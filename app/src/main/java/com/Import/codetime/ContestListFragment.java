@@ -60,7 +60,7 @@ public class ContestListFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.contest_list, container, false);
     }
@@ -76,7 +76,7 @@ public class ContestListFragment extends Fragment {
         image_background_blur=view.findViewById(R.id.bg_blur_iv);
         recyclerView=view.findViewById(R.id.contest_list_rv);
 
-        //fixme: animation not working
+        //bug: animation not working
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.requestDisallowInterceptTouchEvent(true);
@@ -97,7 +97,7 @@ public class ContestListFragment extends Fragment {
         String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date()) + "T00:00:01";
         String resourcesRegex = getFavouriteResourcesRegex();
 
-        Call<ApiResponse> response = RestApiClient.getInstance().getPastContests("2018-11-04T00:00:01", "hackerrank.com|codechef.com", "-end");
+        Call<ApiResponse> response = RestApiClient.getInstance().getPastContests(date, resourcesRegex, "-end");
         response.enqueue(new Callback<ApiResponse>() {
             @Override
             public void onResponse(@NonNull Call<ApiResponse> call, @NonNull Response<ApiResponse> response) {
@@ -120,7 +120,7 @@ public class ContestListFragment extends Fragment {
     }
 
     private String getFavouriteResourcesRegex() {
-        //fixme:this is TEMPORARY, once resources activity is made,return properly
+        //optimize:this is TEMPORARY, once resources activity is made,return properly
         return "hackerrank.com|codechef.com|codeforces.com|topcoder.com";
     }
 
