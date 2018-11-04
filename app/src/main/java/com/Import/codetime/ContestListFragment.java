@@ -23,12 +23,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.Import.codetime.model.ApiResponse;
+import com.Import.codetime.model.Contest;
 import com.Import.codetime.rest.RestApiClient;
 
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -42,6 +45,7 @@ public class ContestListFragment extends Fragment {
     private FrameLayout frameContainer;
     private ImageView image_background_blur;
     private Context mContext;
+    private List<Contest> mList;
 
     public static final String PAST_KEY = "past";
     public static final String ONGOING_KEY = "ongoing";
@@ -72,12 +76,9 @@ public class ContestListFragment extends Fragment {
         image_background_blur=view.findViewById(R.id.bg_blur_iv);
         recyclerView=view.findViewById(R.id.contest_list_rv);
 
-        ArrayList<FakeEventData> eList = setUpFakeData();
-        EventListAdapter adapter=new EventListAdapter(eList,mContext,ContestListFragment.this);
-
+        //fixme: animation not working
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(adapter);
         recyclerView.requestDisallowInterceptTouchEvent(true);
         recyclerView.addOnItemTouchListener(listener);
 
@@ -93,6 +94,9 @@ public class ContestListFragment extends Fragment {
     }
 
     private void getPastEvents() {
+        String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date()) + "T00:00:01";
+        String resourcesRegex = getFavouriteResourcesRegex();
+
         Call<ApiResponse> response = RestApiClient.getInstance().getPastContests("2018-11-04T00:00:01", "hackerrank.com|codechef.com", "-end");
         response.enqueue(new Callback<ApiResponse>() {
             @Override
@@ -101,6 +105,10 @@ public class ContestListFragment extends Fragment {
                     Log.d(TAG, "empty body");
                 } else {
                     Log.d(TAG, "contests size=" + response.body().getContests().size());
+                    mList = response.body().getContests();
+                    EventListAdapter adapter = new EventListAdapter(mList, mContext, ContestListFragment.this);
+
+                    recyclerView.setAdapter(adapter);
                 }
             }
 
@@ -111,6 +119,11 @@ public class ContestListFragment extends Fragment {
         });
     }
 
+    private String getFavouriteResourcesRegex() {
+        //fixme:this is TEMPORARY, once resources activity is made,return properly
+        return "hackerrank.com|codechef.com|codeforces.com|topcoder.com";
+    }
+
     private void setAPICredentials() {
         try {
             String name = getResources().getString(R.string.username);
@@ -119,26 +132,6 @@ public class ContestListFragment extends Fragment {
         } catch (Resources.NotFoundException ex) {
             throw new RuntimeException("please provide username and APIkey");
         }
-    }
-
-    private void checkRestApi() {
-        Call<ApiResponse> response = RestApiClient.getInstance().getAllContests();
-        response.enqueue(new Callback<ApiResponse>() {
-            @Override
-            public void onResponse(@NonNull Call<ApiResponse> call, @NonNull Response<ApiResponse> response) {
-                if (response.body() == null) {
-                    Log.e(TAG, "empty body");
-                } else {
-                    Log.d("Nitin", "contests size=" + response.body().getContests().size());
-                }
-
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<ApiResponse> call, @NonNull Throwable t) {
-                Toast.makeText(mContext, "failure", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     //if we hold then drag our finger and then lift up....then dialog won't close
@@ -166,37 +159,6 @@ public class ContestListFragment extends Fragment {
 
         }
     };
-
-    private ArrayList<FakeEventData> setUpFakeData() {
-        ArrayList<FakeEventData> eList = new ArrayList<>();
-        eList.add(new FakeEventData(R.drawable.ic_launcher_background,"Hacker rank","WeekCode 35"));
-        eList.add(new FakeEventData(R.drawable.ic_launcher_background,"Hacker rank","Euler competition 35"));
-        eList.add(new FakeEventData(R.drawable.ic_launcher_background,"codeShef","WeekCode 35"));
-        eList.add(new FakeEventData(R.drawable.ic_launcher_background,"Hacker rank","nitin nitin nitin ntiitn nitin nitin nitin nitin ntiitn nitin nitin nitin nitin ntiitn nitin"));
-        eList.add(new FakeEventData(R.drawable.ic_launcher_background,"Hacker rank","WeekCode 35"));
-        eList.add(new FakeEventData(R.drawable.ic_launcher_background,"Hacker rank","WeekCode 35"));
-        eList.add(new FakeEventData(R.drawable.ic_launcher_background,"Hacker rank","Euler competition 35"));
-        eList.add(new FakeEventData(R.drawable.ic_launcher_background,"codeShef","WeekCode 35"));
-        eList.add(new FakeEventData(R.drawable.ic_launcher_background,"Hacker rank","nitin nitin nitin ntiitn nitin"));
-        eList.add(new FakeEventData(R.drawable.ic_launcher_background,"Hacker rank","WeekCode 35"));
-        eList.add(new FakeEventData(R.drawable.ic_launcher_background,"Hacker rank","WeekCode 35"));
-        eList.add(new FakeEventData(R.drawable.ic_launcher_background,"Hacker rank","Euler competition 35"));
-        eList.add(new FakeEventData(R.drawable.ic_launcher_background,"codeShef","WeekCode 35"));
-        eList.add(new FakeEventData(R.drawable.ic_launcher_background,"Hacker rank","nitin nitin nitin ntiitn nitin"));
-        eList.add(new FakeEventData(R.drawable.ic_launcher_background,"Hacker rank","WeekCode 35"));
-        eList.add(new FakeEventData(R.drawable.ic_launcher_background,"Hacker rank","WeekCode 35"));
-        eList.add(new FakeEventData(R.drawable.ic_launcher_background,"Hacker rank","Euler competition 35"));
-        eList.add(new FakeEventData(R.drawable.ic_launcher_background,"codeShef","WeekCode 35"));
-        eList.add(new FakeEventData(R.drawable.ic_launcher_background,"Hacker rank","nitin nitin nitin ntiitn nitin"));
-        eList.add(new FakeEventData(R.drawable.ic_launcher_background,"Hacker rank","WeekCode 35"));
-        eList.add(new FakeEventData(R.drawable.ic_launcher_background,"Hacker rank","WeekCode 35"));
-        eList.add(new FakeEventData(R.drawable.ic_launcher_background,"Hacker rank","Euler competition 35"));
-        eList.add(new FakeEventData(R.drawable.ic_launcher_background,"codeShef","WeekCode 35"));
-        eList.add(new FakeEventData(R.drawable.ic_launcher_background,"Hacker rank","nitin nitin nitin ntiitn nitin"));
-        eList.add(new FakeEventData(R.drawable.ic_launcher_background,"Hacker rank","WeekCode 35"));
-
-        return eList;
-    }
 
     public Bitmap blurBitmap(Bitmap bitmap) {
 

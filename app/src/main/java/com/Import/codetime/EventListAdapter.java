@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,15 +17,17 @@ import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import com.Import.codetime.model.Contest;
+
+import java.util.List;
 
 public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.MyViewHolder> {
-    private ArrayList<FakeEventData> eList;
-    Context mContext;
-    Dialog dialog;
-    ContestListFragment mFragment;
+    private List<Contest> eList;
+    private Context mContext;
+    private Dialog dialog;
+    private ContestListFragment mFragment;
 
-    EventListAdapter(ArrayList<FakeEventData> a, Context context, ContestListFragment fragment){
+    EventListAdapter(List<Contest> a, Context context, ContestListFragment fragment) {
         this.eList = a;
         this.mContext=context;
         this.mFragment=fragment;
@@ -42,10 +43,10 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.MyVi
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        FakeEventData event = eList.get(position);
+        Contest event = eList.get(position);
         holder.orgLogo.setImageResource(R.drawable.ic_launcher_background);
-        holder.eventName.setText(event.eventName);
-        holder.orgName.setText(event.orgName);
+        holder.eventName.setText(event.getEvent());
+        holder.orgName.setText(event.getResource().getName());
 
 
     }
@@ -55,10 +56,11 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.MyVi
         return eList.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder{
-        public TextView orgName,eventName;
-        public ImageView orgLogo;
-        public MyViewHolder(View itemView) {
+    class MyViewHolder extends RecyclerView.ViewHolder {
+        TextView orgName, eventName;
+        ImageView orgLogo;
+
+        MyViewHolder(View itemView) {
             super(itemView);
             orgLogo = itemView.findViewById(R.id.image_logo);
             orgName = itemView.findViewById(R.id.text_org_name);
