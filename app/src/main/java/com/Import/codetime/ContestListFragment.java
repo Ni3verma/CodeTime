@@ -90,7 +90,37 @@ public class ContestListFragment extends Fragment {
         setAPICredentials();
         if (type.equals(PAST_KEY)) {
             getPastEvents();
+        } else if (type.equals(ONGOING_KEY)) {
+            getOnGoingEvents();
         }
+    }
+
+    private void getOnGoingEvents() {
+        String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date())
+                + "T"
+                + new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
+        String resourcesRegex = getFavouriteResourcesRegex();
+
+        Call<ApiResponse> response = RestApiClient.getInstance().getOnGoingContests(date, date, resourcesRegex, "-end");
+        response.enqueue(new Callback<ApiResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<ApiResponse> call, @NonNull Response<ApiResponse> response) {
+                if (response.body() == null) {
+                    Log.d(TAG, "empty body");
+                } else {
+                    Log.d(TAG, "contests size=" + response.body().getContests().size());
+                    mList = response.body().getContests();
+                    EventListAdapter adapter = new EventListAdapter(mList, mContext, ContestListFragment.this);
+
+                    recyclerView.setAdapter(adapter);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ApiResponse> call, @NonNull Throwable t) {
+                Log.d(TAG, "failure");
+            }
+        });
     }
 
     private void getPastEvents() {
@@ -121,7 +151,7 @@ public class ContestListFragment extends Fragment {
 
     private String getFavouriteResourcesRegex() {
         //optimize:this is TEMPORARY, once resources activity is made,return properly
-        return "hackerrank.com|codechef.com|codeforces.com|topcoder.com";
+        return "hackerrank.com|codechef.com|codeforces.com|topcoder.com|hackerearth.com";
     }
 
     private void setAPICredentials() {

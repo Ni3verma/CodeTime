@@ -50,6 +50,18 @@ public class HomeFragment extends Fragment {
                 setFragment(ContestListFragment.PAST_KEY);
             }
         });
+        present_cv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setFragment(ContestListFragment.ONGOING_KEY);
+            }
+        });
+        future_cv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setFragment(ContestListFragment.FUTURE_KEY);
+            }
+        });
     }
 
     private void setFragment(String contestTypeKey) {
