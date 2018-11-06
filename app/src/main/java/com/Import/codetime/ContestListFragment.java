@@ -24,9 +24,13 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.Import.codetime.database.AppDatabase;
+import com.Import.codetime.database.ContestEntry;
+import com.Import.codetime.database.MyDiskExecutor;
 import com.Import.codetime.model.ApiResponse;
 import com.Import.codetime.model.Contest;
 import com.Import.codetime.rest.RestApiClient;
+import com.Import.codetime.utils.DbUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -53,6 +57,8 @@ public class ContestListFragment extends Fragment {
     public static final String EVENT_TYPE = "type";
     private static final String TAG = "Nitin";
 
+    private AppDatabase mDb;
+
 
     public ContestListFragment() {
         // Required empty public constructor
@@ -72,6 +78,7 @@ public class ContestListFragment extends Fragment {
         getActivity().setTitle("Events");
 
         mContext=getActivity();
+        mDb = AppDatabase.getInstance(mContext);
         frameContainer=view.findViewById(R.id.frame_container);
         image_background_blur=view.findViewById(R.id.bg_blur_iv);
         recyclerView=view.findViewById(R.id.contest_list_rv);
@@ -89,11 +96,11 @@ public class ContestListFragment extends Fragment {
 
         setAPICredentials();
         if (type.equals(PAST_KEY)) {
-            getPastEvents();
+            getContestsByType(DbUtils.TYPE_PAST_EVENTS);
         } else if (type.equals(ONGOING_KEY)) {
-            getOnGoingEvents();
+            getContestsByType(DbUtils.TYPE_ONGOING_EVENTS);
         } else if (type.equals(FUTURE_KEY)) {
-            getFutureEvents();
+            getContestsByType(DbUtils.TYPE_FUTURE_EVENTS);
         }
     }
 
@@ -112,6 +119,11 @@ public class ContestListFragment extends Fragment {
                 } else {
                     Log.d(TAG, "contests size=" + response.body().getContests().size());
                     mList = response.body().getContests();
+                    List<ContestEntry> contestEntryList = DbUtils.convertToContestEntryType(
+                            mList,
+                            DbUtils.TYPE_FUTURE_EVENTS
+                    );
+                    addContestsToDatabase(contestEntryList);
                     EventListAdapter adapter = new EventListAdapter(mList, mContext, ContestListFragment.this);
 
                     recyclerView.setAdapter(adapter);
@@ -140,6 +152,11 @@ public class ContestListFragment extends Fragment {
                 } else {
                     Log.d(TAG, "contests size=" + response.body().getContests().size());
                     mList = response.body().getContests();
+                    List<ContestEntry> contestEntryList = DbUtils.convertToContestEntryType(
+                            mList,
+                            DbUtils.TYPE_ONGOING_EVENTS
+                    );
+                    addContestsToDatabase(contestEntryList);
                     EventListAdapter adapter = new EventListAdapter(mList, mContext, ContestListFragment.this);
 
                     recyclerView.setAdapter(adapter);
@@ -166,6 +183,11 @@ public class ContestListFragment extends Fragment {
                 } else {
                     Log.d(TAG, "contests size=" + response.body().getContests().size());
                     mList = response.body().getContests();
+                    List<ContestEntry> contestEntryList = DbUtils.convertToContestEntryType(
+                            mList,
+                            DbUtils.TYPE_PAST_EVENTS
+                    );
+                    addContestsToDatabase(contestEntryList);
                     EventListAdapter adapter = new EventListAdapter(mList, mContext, ContestListFragment.this);
 
                     recyclerView.setAdapter(adapter);
@@ -175,6 +197,39 @@ public class ContestListFragment extends Fragment {
             @Override
             public void onFailure(@NonNull Call<ApiResponse> call, @NonNull Throwable t) {
                 Log.d(TAG, "failure");
+            }
+        });
+    }
+
+    private void addContestsToDatabase(final List<ContestEntry> contestEntryList) {
+        MyDiskExecutor.getsInstance().getDiskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                mDb.ContestDao().insertContests(contestEntryList);
+            }
+        });
+    }
+
+    private void getContestsByType(final int type) {
+        MyDiskExecutor.getsInstance().getDiskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                final List<ContestEntry> list = mDb.ContestDao().getContestsByType(type);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (list.size() == 0) {  // no data in db, so fetch it from internet
+                            if (type == DbUtils.TYPE_PAST_EVENTS) {
+                                getPastEvents();
+                            } else if (type == DbUtils.TYPE_ONGOING_EVENTS) {
+                                getOnGoingEvents();
+                            } else
+                                getFutureEvents();
+                        } else {   // we have data in db
+                            // TODO: 6/11/18 we have list, update the adapter and show the data
+                        }
+                    }
+                });
             }
         });
     }
