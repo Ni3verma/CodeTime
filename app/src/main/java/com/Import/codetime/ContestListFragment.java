@@ -13,7 +13,6 @@ import android.renderscript.ScriptIntrinsicBlur;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -87,9 +86,7 @@ public class ContestListFragment extends Fragment {
         recyclerView=view.findViewById(R.id.contest_list_rv);
         contestEntryList = new ArrayList<>();
 
-        //bug: animation not working
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.requestDisallowInterceptTouchEvent(true);
         recyclerView.addOnItemTouchListener(listener);
 

@@ -20,8 +20,7 @@
         android:layout_width="match_parent"
         android:scrollbars="vertical"
         android:background="@color/dividerColor"
-        tools:listitem="@layout/contest_list_row"
-        android:layoutAnimation="@anim/layout_animation_events_rv">
+        tools:listitem="@layout/contest_list_row">
 
     </android.support.v7.widget.RecyclerView>
 </FrameLayout>

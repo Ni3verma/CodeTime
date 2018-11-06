@@ -14,6 +14,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -50,6 +53,22 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.MyVi
 
         holder.startDate = event.getStartDate();
         holder.endDate = event.getEndDate();
+
+        setAnimation(holder.itemView);
+    }
+
+    private void setAnimation(View view) {
+        final long DURATION = 500;
+
+        AlphaAnimation alphaAnimation = new AlphaAnimation(0.0f, 1.0f);
+        alphaAnimation.setDuration(DURATION);
+        view.setAnimation(alphaAnimation);
+
+        ScaleAnimation scaleAnimation = new ScaleAnimation(0.1f, 1.0f, 0.0f, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        scaleAnimation.setDuration(DURATION);
+        view.setAnimation(scaleAnimation);
+
+        view.animate();
     }
 
     @Override
