@@ -36,7 +36,6 @@
             app:layout_constraintTop_toTopOf="@+id/image_logo"
             tools:text="Hacker rank" />
 
-        <!--TODO:test scroll horizontally-->
         <TextView
             android:id="@+id/text_event_name"
             android:layout_width="250dp"
