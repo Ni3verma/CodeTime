@@ -14,4 +14,7 @@ public interface ContestDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertContests(ContestEntry... contests); //bulk insert
+
+    @Query("select * from contest where eventType=:type")
+    List<ContestEntry> getContestsByType(int type);
 }

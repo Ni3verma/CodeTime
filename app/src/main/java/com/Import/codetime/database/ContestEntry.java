@@ -15,18 +15,20 @@ public class ContestEntry {
     private String startDate;
     private String endDate;
     private String resourceName;
+    private int eventType;  // can be 1 or 2 or 3. constants are defined in DbUtils.java class
 
     @Ignore
-    public ContestEntry(String name, String URL, int contestId, String startDate, String endDate, String resourceName) {
+    public ContestEntry(String name, String URL, int contestId, String startDate, String endDate, String resourceName, int eventType) {
         this.name = name;
         this.URL = URL;
         this.contestId = contestId;
         this.startDate = startDate;
         this.endDate = endDate;
         this.resourceName = resourceName;
+        this.eventType = eventType;
     }
 
-    public ContestEntry(int id, String name, String URL, int contestId, String startDate, String endDate, String resourceName) {
+    public ContestEntry(int id, String name, String URL, int contestId, String startDate, String endDate, String resourceName, int eventType) {
         this.id = id;
         this.name = name;
         this.URL = URL;
@@ -34,6 +36,7 @@ public class ContestEntry {
         this.startDate = startDate;
         this.endDate = endDate;
         this.resourceName = resourceName;
+        this.eventType = eventType;
     }
 
     public int getId() {
@@ -90,5 +93,13 @@ public class ContestEntry {
 
     public void setResourceName(String resourceName) {
         this.resourceName = resourceName;
+    }
+
+    public int getEventType() {
+        return eventType;
+    }
+
+    public void setEventType(int eventType) {
+        this.eventType = eventType;
     }
 }
