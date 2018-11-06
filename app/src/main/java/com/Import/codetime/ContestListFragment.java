@@ -33,9 +33,11 @@ import com.Import.codetime.rest.RestApiClient;
 import com.Import.codetime.utils.DbUtils;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -49,7 +51,8 @@ public class ContestListFragment extends Fragment {
     private FrameLayout frameContainer;
     private ImageView image_background_blur;
     private Context mContext;
-    private List<Contest> mList;
+    private List<ContestEntry> contestEntryList;
+    private EventListAdapter adapter;
 
     public static final String PAST_KEY = "past";
     public static final String ONGOING_KEY = "ongoing";
@@ -75,13 +78,14 @@ public class ContestListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        getActivity().setTitle("Events");
+        Objects.requireNonNull(getActivity()).setTitle("Events");
 
         mContext=getActivity();
         mDb = AppDatabase.getInstance(mContext);
         frameContainer=view.findViewById(R.id.frame_container);
         image_background_blur=view.findViewById(R.id.bg_blur_iv);
         recyclerView=view.findViewById(R.id.contest_list_rv);
+        contestEntryList = new ArrayList<>();
 
         //bug: animation not working
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -95,12 +99,16 @@ public class ContestListFragment extends Fragment {
         assert type != null;
 
         setAPICredentials();
-        if (type.equals(PAST_KEY)) {
-            getContestsByType(DbUtils.TYPE_PAST_EVENTS);
-        } else if (type.equals(ONGOING_KEY)) {
-            getContestsByType(DbUtils.TYPE_ONGOING_EVENTS);
-        } else if (type.equals(FUTURE_KEY)) {
-            getContestsByType(DbUtils.TYPE_FUTURE_EVENTS);
+        switch (type) {
+            case PAST_KEY:
+                getContestsByType(DbUtils.TYPE_PAST_EVENTS);
+                break;
+            case ONGOING_KEY:
+                getContestsByType(DbUtils.TYPE_ONGOING_EVENTS);
+                break;
+            case FUTURE_KEY:
+                getContestsByType(DbUtils.TYPE_FUTURE_EVENTS);
+                break;
         }
     }
 
@@ -118,15 +126,13 @@ public class ContestListFragment extends Fragment {
                     Log.d(TAG, "empty body");
                 } else {
                     Log.d(TAG, "contests size=" + response.body().getContests().size());
-                    mList = response.body().getContests();
-                    List<ContestEntry> contestEntryList = DbUtils.convertToContestEntryType(
-                            mList,
+                    List<Contest> contestList = response.body().getContests();
+                    contestEntryList = DbUtils.convertToContestEntryType(
+                            contestList,
                             DbUtils.TYPE_FUTURE_EVENTS
                     );
                     addContestsToDatabase(contestEntryList);
-                    EventListAdapter adapter = new EventListAdapter(mList, mContext, ContestListFragment.this);
-
-                    recyclerView.setAdapter(adapter);
+                    setAdapter(contestEntryList);
                 }
             }
 
@@ -151,15 +157,13 @@ public class ContestListFragment extends Fragment {
                     Log.d(TAG, "empty body");
                 } else {
                     Log.d(TAG, "contests size=" + response.body().getContests().size());
-                    mList = response.body().getContests();
-                    List<ContestEntry> contestEntryList = DbUtils.convertToContestEntryType(
-                            mList,
+                    List<Contest> contestList = response.body().getContests();
+                    contestEntryList = DbUtils.convertToContestEntryType(
+                            contestList,
                             DbUtils.TYPE_ONGOING_EVENTS
                     );
                     addContestsToDatabase(contestEntryList);
-                    EventListAdapter adapter = new EventListAdapter(mList, mContext, ContestListFragment.this);
-
-                    recyclerView.setAdapter(adapter);
+                    setAdapter(contestEntryList);
                 }
             }
 
@@ -182,15 +186,13 @@ public class ContestListFragment extends Fragment {
                     Log.d(TAG, "empty body");
                 } else {
                     Log.d(TAG, "contests size=" + response.body().getContests().size());
-                    mList = response.body().getContests();
-                    List<ContestEntry> contestEntryList = DbUtils.convertToContestEntryType(
-                            mList,
+                    List<Contest> contestList = response.body().getContests();
+                    contestEntryList = DbUtils.convertToContestEntryType(
+                            contestList,
                             DbUtils.TYPE_PAST_EVENTS
                     );
                     addContestsToDatabase(contestEntryList);
-                    EventListAdapter adapter = new EventListAdapter(mList, mContext, ContestListFragment.this);
-
-                    recyclerView.setAdapter(adapter);
+                    setAdapter(contestEntryList);
                 }
             }
 
@@ -215,7 +217,7 @@ public class ContestListFragment extends Fragment {
             @Override
             public void run() {
                 final List<ContestEntry> list = mDb.ContestDao().getContestsByType(type);
-                getActivity().runOnUiThread(new Runnable() {
+                Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         if (list.size() == 0) {  // no data in db, so fetch it from internet
@@ -225,13 +227,18 @@ public class ContestListFragment extends Fragment {
                                 getOnGoingEvents();
                             } else
                                 getFutureEvents();
-                        } else {   // we have data in db
-                            // TODO: 6/11/18 we have list, update the adapter and show the data
+                        } else {   // we have data in db, so fetch from here
+                            setAdapter(list);
                         }
                     }
                 });
             }
         });
+    }
+
+    private void setAdapter(List<ContestEntry> list) {
+        adapter = new EventListAdapter(list, mContext, ContestListFragment.this);
+        recyclerView.setAdapter(adapter);
     }
 
     private String getFavouriteResourcesRegex() {

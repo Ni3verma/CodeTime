@@ -47,6 +47,6 @@ public class DbUtils {
                     time[0] = hour - 12 + "";
             }
         }
-        return s[0] + "\n" + time[0] + ":" + time[1] + ":" + time[2] + " " + marker;
+        return s[0] + "\n" + time[0] + ":" + time[1] + " " + marker;
     }
 }

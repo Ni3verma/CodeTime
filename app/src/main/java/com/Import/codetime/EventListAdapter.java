@@ -17,17 +17,17 @@ import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.Import.codetime.model.Contest;
+import com.Import.codetime.database.ContestEntry;
 
 import java.util.List;
 
 public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.MyViewHolder> {
-    private List<Contest> eList;
+    private List<ContestEntry> eList;
     private Context mContext;
     private Dialog dialog;
     private ContestListFragment mFragment;
 
-    EventListAdapter(List<Contest> a, Context context, ContestListFragment fragment) {
+    EventListAdapter(List<ContestEntry> a, Context context, ContestListFragment fragment) {
         this.eList = a;
         this.mContext=context;
         this.mFragment=fragment;
@@ -43,31 +43,13 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.MyVi
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        Contest event = eList.get(position);
+        ContestEntry event = eList.get(position);
         holder.orgLogo.setImageResource(R.drawable.ic_launcher_background);
-        holder.eventName.setText(event.getEvent());
-        holder.orgName.setText(event.getResource().getName());
+        holder.eventName.setText(event.getName());
+        holder.orgName.setText(event.getResourceName());
 
-        holder.startDate = getFormattedDate(event.getStart());
-        holder.endDate = getFormattedDate(event.getEnd());
-    }
-
-    private String getFormattedDate(String date) {
-        String s[] = date.split("T"); //as response has time in this format yyyy:MM:ddThh:mm:ss, so we can split date and time at T. now s[0] contains date and s[1] contains time in 24 hour format
-
-        String time[] = s[1].split(":");
-        String marker = "AM";
-        int hour = Integer.parseInt(time[0]);
-        if (hour > 11) {
-            marker = "PM";
-            if (hour > 12) {
-                if (hour - 12 < 10)
-                    time[0] = "0" + (hour - 12); // eg: make it 09, instead of 9
-                else
-                    time[0] = hour - 12 + "";
-            }
-        }
-        return s[0] + "\n" + time[0] + ":" + time[1] + ":" + time[2] + " " + marker;
+        holder.startDate = event.getStartDate();
+        holder.endDate = event.getEndDate();
     }
 
     @Override
