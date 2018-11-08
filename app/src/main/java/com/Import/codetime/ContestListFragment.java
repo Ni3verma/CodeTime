@@ -2,6 +2,7 @@ package com.Import.codetime;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -244,31 +245,12 @@ public class ContestListFragment extends Fragment {
         });
     }
 
-    private void setAdapter(List<ContestEntry> list) {
-        adapter = new EventListAdapter(list, mContext, ContestListFragment.this);
-        recyclerView.setAdapter(adapter);
-    }
-
-    private String getFavouriteResourcesRegex() {
-        //optimize:this is TEMPORARY, once resources activity is made,return properly
-        return "hackerrank.com|codechef.com|codeforces.com|topcoder.com|hackerearth.com";
-    }
-
-    private void setAPICredentials() {
-        try {
-            String name = getResources().getString(R.string.username);
-            String key = getResources().getString(R.string.key);
-            RestApiClient.setAuthParam(name, key);
-        } catch (Resources.NotFoundException ex) {
-            throw new RuntimeException("please provide username and APIkey");
-        }
-    }
-
     //if we hold then drag our finger and then lift up....then dialog won't close
     //if we wan't this functionality then add this.
     RecyclerView.OnItemTouchListener listener=new RecyclerView.OnItemTouchListener() {
         @Override
         public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+//            Log.d(TAG,"action="+e.getAction());
             if(e.getAction() == MotionEvent.ACTION_UP){
                 EventListAdapter adapter=(EventListAdapter) rv.getAdapter();
                 removeBlur();
@@ -289,6 +271,35 @@ public class ContestListFragment extends Fragment {
 
         }
     };
+
+    private String getFavouriteResourcesRegex() {
+        //optimize:this is TEMPORARY, once resources activity is made,return properly
+        return "hackerrank.com|codechef.com|codeforces.com|topcoder.com|hackerearth.com";
+    }
+
+    private void setAPICredentials() {
+        try {
+            String name = getResources().getString(R.string.username);
+            String key = getResources().getString(R.string.key);
+            RestApiClient.setAuthParam(name, key);
+        } catch (Resources.NotFoundException ex) {
+            throw new RuntimeException("please provide username and APIkey");
+        }
+    }
+
+    private void setAdapter(List<ContestEntry> list) {
+        ContestListClickListener clickListener = new ContestListClickListener() {
+            @Override
+            public void onContestClick(int id) {
+                // open detail activity
+                Intent intent = new Intent(getActivity(), ContestDetailActivity.class);
+                intent.putExtra(ContestDetailActivity.ID_EXTRA_KEY, id);
+                startActivity(intent);
+            }
+        };
+        adapter = new EventListAdapter(list, mContext, ContestListFragment.this, clickListener);
+        recyclerView.setAdapter(adapter);
+    }
 
     public Bitmap blurBitmap(Bitmap bitmap) {
 
