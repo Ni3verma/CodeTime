@@ -58,7 +58,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.MyVi
     }
 
     private void setAnimation(View view) {
-        final long DURATION = 500;
+        final long DURATION = 400;
 
         AlphaAnimation alphaAnimation = new AlphaAnimation(0.0f, 1.0f);
         alphaAnimation.setDuration(DURATION);

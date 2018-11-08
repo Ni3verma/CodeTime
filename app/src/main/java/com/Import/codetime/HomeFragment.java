@@ -9,6 +9,7 @@ import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class HomeFragment extends Fragment {
@@ -27,7 +28,7 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         getActivity().setTitle("Home");
@@ -47,24 +48,27 @@ public class HomeFragment extends Fragment {
         past_cv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setFragment(ContestListFragment.PAST_KEY);
+                view.findViewById(R.id.past_iv).setTransitionName(getString(R.string.image_type_transition));
+                setFragment(ContestListFragment.PAST_KEY, (ImageView) view.findViewById(R.id.past_iv));
             }
         });
         present_cv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setFragment(ContestListFragment.ONGOING_KEY);
+                view.findViewById(R.id.ongoing_iv).setTransitionName(getString(R.string.image_type_transition));
+                setFragment(ContestListFragment.ONGOING_KEY, (ImageView) view.findViewById(R.id.ongoing_iv));
             }
         });
         future_cv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setFragment(ContestListFragment.FUTURE_KEY);
+                view.findViewById(R.id.future_iv).setTransitionName(getString(R.string.image_type_transition));
+                setFragment(ContestListFragment.FUTURE_KEY, (ImageView) view.findViewById(R.id.future_iv));
             }
         });
     }
 
-    private void setFragment(String contestTypeKey) {
+    private void setFragment(String contestTypeKey, ImageView imageView) {
         FragmentChangeListener fcl = (FragmentChangeListener) getActivity();
         ContestListFragment fragment = new ContestListFragment();
 
@@ -72,7 +76,7 @@ public class HomeFragment extends Fragment {
         arguments.putString(ContestListFragment.EVENT_TYPE, contestTypeKey);
         fragment.setArguments(arguments);
 
-        fcl.replaceFragment(fragment);
+        fcl.openListFragment(fragment, imageView);
     }
 
     void setTextViewAnimation(TextView tv){

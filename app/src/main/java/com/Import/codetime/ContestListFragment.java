@@ -15,6 +15,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -53,9 +54,9 @@ public class ContestListFragment extends Fragment {
     private List<ContestEntry> contestEntryList;
     private EventListAdapter adapter;
 
-    public static final String PAST_KEY = "past";
-    public static final String ONGOING_KEY = "ongoing";
-    public static final String FUTURE_KEY = "future";
+    public static final String PAST_KEY = "Past Events";
+    public static final String ONGOING_KEY = "Ongoing Events";
+    public static final String FUTURE_KEY = "Future Events";
     public static final String EVENT_TYPE = "type";
     private static final String TAG = "Nitin";
 
@@ -66,6 +67,11 @@ public class ContestListFragment extends Fragment {
         // Required empty public constructor
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setSharedElementEnterTransition(TransitionInflater.from(getContext()).inflateTransition(android.R.transition.move));
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -77,13 +83,12 @@ public class ContestListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Objects.requireNonNull(getActivity()).setTitle("Events");
-
         mContext=getActivity();
         mDb = AppDatabase.getInstance(mContext);
         frameContainer=view.findViewById(R.id.frame_container);
         image_background_blur=view.findViewById(R.id.bg_blur_iv);
         recyclerView=view.findViewById(R.id.contest_list_rv);
+        ImageView imageView = view.findViewById(R.id.image_type);
         contestEntryList = new ArrayList<>();
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -98,16 +103,22 @@ public class ContestListFragment extends Fragment {
         setAPICredentials();
         switch (type) {
             case PAST_KEY:
+                imageView.setImageResource(R.drawable.past_sand_clock);
                 getContestsByType(DbUtils.TYPE_PAST_EVENTS);
                 break;
             case ONGOING_KEY:
+                imageView.setImageResource(R.drawable.present_sand_clock);
                 getContestsByType(DbUtils.TYPE_ONGOING_EVENTS);
                 break;
             case FUTURE_KEY:
+                imageView.setImageResource(R.drawable.future_man_stop_clock);
                 getContestsByType(DbUtils.TYPE_FUTURE_EVENTS);
                 break;
         }
+
+        Objects.requireNonNull(getActivity()).setTitle(type);
     }
+
 
     private void getFutureEvents() {
         String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date())

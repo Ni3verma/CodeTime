@@ -6,12 +6,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.transition.Fade;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, FragmentChangeListener{
@@ -90,6 +93,7 @@ public class MainActivity extends AppCompatActivity
 
         if (fragment != null){
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
             transaction.replace(R.id.content_frame,fragment);
             transaction.commit();
         }
@@ -99,13 +103,21 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void replaceFragment(Fragment fragment) {
+    public void openListFragment(Fragment fragment, ImageView imageView) {
         //TODO: clear selected item in nav drawer
 
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.content_frame, fragment)
+                .addToBackStack(fragment.toString());
+        if (imageView != null) {
+            fragmentTransaction.addSharedElement(imageView, ViewCompat.getTransitionName(imageView));
+        }
+
         FragmentManager fragmentManager=getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction=fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.content_frame,fragment);
-        fragmentTransaction.addToBackStack(fragment.toString());
+        Fragment prevFragment = fragmentManager.findFragmentById(R.id.content_frame);
+        prevFragment.setExitTransition(new Fade());
+
         fragmentTransaction.commit();
     }
 }

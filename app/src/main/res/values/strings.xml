@@ -11,5 +11,5 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
-
+    <string name="image_type_transition">home_iv to contest_list_iv</string>
 </resources>

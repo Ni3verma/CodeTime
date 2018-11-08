@@ -24,6 +24,7 @@
             android:orientation="vertical">
 
             <ImageView
+                android:id="@+id/past_iv"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
@@ -61,6 +62,7 @@
             android:orientation="vertical">
 
             <ImageView
+                android:id="@+id/ongoing_iv"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
@@ -91,8 +93,7 @@
         app:cardMaxElevation="2dp"
         app:contentPadding="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/onGoing"
-        android:onClick="futureCardViewClicked">
+        app:layout_constraintTop_toBottomOf="@+id/onGoing">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -100,6 +101,7 @@
             android:orientation="vertical">
 
             <ImageView
+                android:id="@+id/future_iv"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="center"
