@@ -26,6 +26,7 @@
         android:src="@drawable/ic_browser"
         app:layout_constraintBottom_toBottomOf="@+id/poster"
         app:layout_constraintEnd_toEndOf="parent"
+        android:onClick="openInBrowser"
         app:layout_constraintTop_toBottomOf="@+id/poster" />
 
     <android.support.v7.widget.CardView
@@ -47,7 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/whiteText"
-            android:textSize="28sp"
+            android:textSize="20sp"
             tools:text="Week Code 35" />
     </android.support.v7.widget.CardView>
 
@@ -68,7 +69,7 @@
         android:paddingStart="24dp"
         android:paddingEnd="24dp"
         android:textColor="@color/whiteText"
-        android:textSize="20sp"
+        android:textSize="14sp"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardView"
@@ -84,7 +85,7 @@
         android:paddingStart="24dp"
         android:paddingEnd="24dp"
         android:textColor="@color/whiteText"
-        android:textSize="20sp"
+        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/cardView"
@@ -101,6 +102,7 @@
         android:src="@drawable/ic_share"
         app:fabSize="normal"
         app:layout_constraintBottom_toBottomOf="parent"
+        android:onClick="shareContest"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
@@ -111,9 +113,10 @@
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
         android:text="Add to Calendar"
-        android:textSize="18sp"
+        android:onClick="addToCalender"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        android:textSize="14sp"
         app:layout_constraintTop_toBottomOf="@+id/start_date" />
 
 </android.support.constraint.ConstraintLayout>
