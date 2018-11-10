@@ -12,4 +12,5 @@
     <string name="action_settings">Settings</string>
 
     <string name="image_type_transition">home_iv to contest_list_iv</string>
+    <string name="poster_iv_cd">poster image of contest platform</string>
 </resources>
