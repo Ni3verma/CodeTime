@@ -1,8 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-
     <CheckBoxPreference
         android:defaultValue="false"
-        android:key="check_box_preference_1"
-        android:title="Check box preference" />
+        android:icon="@drawable/codechef_logo"
+        android:key="@string/pref_codechef_key"
+        android:title="Codechef" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:icon="@drawable/codeforces_logo"
+        android:key="@string/pref_codeforces_key"
+        android:title="Codeforces" />
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:icon="@drawable/hackerearth_logo"
+        android:key="@string/pref_hackerearth_key"
+        android:title="Hackerearth" />
+    <!--fixme: change icon-->
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:icon="@drawable/hackerearth_logo"
+        android:key="@string/pref_hackerrank_key"
+        android:title="Hackerrank" />
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:icon="@drawable/topcoder_logo"
+        android:key="@string/pref_topcoder_key"
+        android:title="Topcoder" />
 </PreferenceScreen>

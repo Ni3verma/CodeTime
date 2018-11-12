@@ -13,4 +13,11 @@
 
     <string name="image_type_transition">home_iv to contest_list_iv</string>
     <string name="poster_iv_cd">poster image of contest platform</string>
+
+    <string name="pref_codechef_key">codechef.com</string>
+    <string name="pref_codeforces_key">codeforces.com</string>
+    <string name="pref_hackerearth_key">hackerearth.com</string>
+    <string name="pref_hackerrank_key">hackerrank.com</string>
+    <string name="pref_topcoder_key">topcoder.com</string>
+
 </resources>
