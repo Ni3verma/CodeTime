@@ -20,4 +20,7 @@ public interface ContestDao {
 
     @Query("select * from contest where id=:id")
     ContestEntry getContestById(int id);
+
+    @Query("delete from contest")
+    void deleteAllContests();
 }

@@ -225,14 +225,21 @@ public class ContestListFragment extends Fragment {
     }
 
     private void getContestsByType(final int type) {
+        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        final boolean prefChanged = sharedPreferences.getBoolean(SettingsActivity.prefChangedKey, false);
+
         MyDiskExecutor.getsInstance().getDiskIO().execute(new Runnable() {
             @Override
             public void run() {
+                if (prefChanged) {
+                    mDb.ContestDao().deleteAllContests();   //clear table
+                    sharedPreferences.edit().putBoolean(SettingsActivity.prefChangedKey, false).commit();  //  make it false again
+                }
                 final List<ContestEntry> list = mDb.ContestDao().getContestsByType(type);
                 Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if (list.size() == 0) {  // no data in db, so fetch it from internet
+                        if (list.size() == 0) {  // if no data in db, so fetch it from internet
                             if (type == DbUtils.TYPE_PAST_EVENTS) {
                                 getPastEvents();
                             } else if (type == DbUtils.TYPE_ONGOING_EVENTS) {
