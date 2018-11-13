@@ -284,7 +284,8 @@ public class ContestListFragment extends Fragment {
                 resourceRegex.append(key).append("|");
             }
         }
-        resourceRegex.deleteCharAt(resourceRegex.length() - 1);   //delete last extra pipe symbol
+        if (resourceRegex.length() > 0)
+            resourceRegex.deleteCharAt(resourceRegex.length() - 1);   //delete last extra pipe symbol
         Log.d("Nitin", "resurce regex=" + String.valueOf(resourceRegex));
 
         return resourceRegex.toString();

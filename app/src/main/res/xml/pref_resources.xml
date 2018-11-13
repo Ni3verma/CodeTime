@@ -15,10 +15,9 @@
         android:icon="@drawable/hackerearth_logo"
         android:key="@string/pref_hackerearth_key"
         android:title="Hackerearth" />
-    <!--fixme: change icon-->
     <CheckBoxPreference
         android:defaultValue="false"
-        android:icon="@drawable/hackerearth_logo"
+        android:icon="@drawable/hackerrank_logo"
         android:key="@string/pref_hackerrank_key"
         android:title="Hackerrank" />
     <CheckBoxPreference
