@@ -38,8 +38,8 @@ public class ContestDetailActivity extends AppCompatActivity {
                         TextView endDate = findViewById(R.id.end_date);
 
                         name.setText(contest.getName());
-                        startDate.setText("Start date\n" + contest.getStartDate());
-                        endDate.setText("End date\n" + contest.getEndDate());
+                        startDate.setText(String.format("Start date\n%s", contest.getStartDate()));
+                        endDate.setText(String.format("End date\n%s", contest.getEndDate()));
                     }
                 });
             }

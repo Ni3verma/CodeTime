@@ -226,14 +226,14 @@ public class ContestListFragment extends Fragment {
 
     private void getContestsByType(final int type) {
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-        final boolean prefChanged = sharedPreferences.getBoolean(SettingsActivity.prefChangedKey, false);
+        final boolean prefChanged = sharedPreferences.getBoolean(MainActivity.prefChangedKey, false);
 
         MyDiskExecutor.getsInstance().getDiskIO().execute(new Runnable() {
             @Override
             public void run() {
                 if (prefChanged) {
                     mDb.ContestDao().deleteAllContests();   //clear table
-                    sharedPreferences.edit().putBoolean(SettingsActivity.prefChangedKey, false).commit();  //  make it false again
+                    sharedPreferences.edit().putBoolean(MainActivity.prefChangedKey, false).commit();  //  make it false again
                 }
                 final List<ContestEntry> list = mDb.ContestDao().getContestsByType(type);
                 Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
