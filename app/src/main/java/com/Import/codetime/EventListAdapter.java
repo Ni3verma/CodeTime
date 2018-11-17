@@ -65,7 +65,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.MyVi
         alphaAnimation.setDuration(DURATION);
         view.setAnimation(alphaAnimation);
 
-        ScaleAnimation scaleAnimation = new ScaleAnimation(0.1f, 1.0f, 0.0f, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        ScaleAnimation scaleAnimation = new ScaleAnimation(0.7f, 1.0f, 0.0f, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         scaleAnimation.setDuration(DURATION);
         view.setAnimation(scaleAnimation);
 

@@ -1,9 +1,9 @@
 package com.Import.codetime;
 
 
+import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -14,8 +14,9 @@ import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.transition.TransitionInflater;
@@ -30,22 +31,19 @@ import android.widget.ImageView;
 import com.Import.codetime.database.AppDatabase;
 import com.Import.codetime.database.ContestEntry;
 import com.Import.codetime.database.MyDiskExecutor;
-import com.Import.codetime.model.ApiResponse;
-import com.Import.codetime.model.Contest;
 import com.Import.codetime.rest.RestApiClient;
 import com.Import.codetime.utils.DbUtils;
+import com.Import.codetime.work.FreshDataWork;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
-import java.util.Set;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import androidx.work.Data;
+import androidx.work.ExistingWorkPolicy;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkInfo;
+import androidx.work.WorkManager;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -101,151 +99,128 @@ public class ContestListFragment extends Fragment {
 
         Bundle arguments = getArguments();
         assert arguments != null;
-        String type = arguments.getString(EVENT_TYPE);
+        final String type = arguments.getString(EVENT_TYPE);
+        int contestTypeInt = -1;
         assert type != null;
 
         setAPICredentials();
+
         switch (type) {
             case PAST_KEY:
+                contestTypeInt = DbUtils.TYPE_PAST_EVENTS;
                 imageView.setImageResource(R.drawable.past_sand_clock);
-                getContestsByType(DbUtils.TYPE_PAST_EVENTS);
                 break;
             case ONGOING_KEY:
+                contestTypeInt = DbUtils.TYPE_ONGOING_EVENTS;
                 imageView.setImageResource(R.drawable.present_sand_clock);
-                getContestsByType(DbUtils.TYPE_ONGOING_EVENTS);
                 break;
             case FUTURE_KEY:
+                contestTypeInt = DbUtils.TYPE_FUTURE_EVENTS;
                 imageView.setImageResource(R.drawable.future_man_stop_clock);
-                getContestsByType(DbUtils.TYPE_FUTURE_EVENTS);
                 break;
         }
 
+        getContestsByType(contestTypeInt);
+
+        FloatingActionButton fab = view.findViewById(R.id.refresh_fab);
+        final int finalContestTypeInt = contestTypeInt;
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                refreshData(finalContestTypeInt);
+            }
+        });
         Objects.requireNonNull(getActivity()).setTitle(type);
     }
 
+    private void refreshData(final int finalContestTypeInt) {
+        Data data = new Data.Builder().putInt(FreshDataWork.CONTEST_TYPE_KEY, finalContestTypeInt).build();
 
-    private void getFutureEvents() {
-        String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date())
-                + "T"
-                + new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
-        String resourcesRegex = getFavouriteResourcesRegex();
+        OneTimeWorkRequest request = new OneTimeWorkRequest.Builder(FreshDataWork.class)
+                .setInputData(data)
+                .build();
 
-        Call<ApiResponse> response = RestApiClient.getInstance().getFutureContests(date, resourcesRegex, "start");
-        response.enqueue(new Callback<ApiResponse>() {
-            @Override
-            public void onResponse(@NonNull Call<ApiResponse> call, @NonNull Response<ApiResponse> response) {
-                if (response.body() == null) {
-                    Log.d(TAG, "empty body");
-                } else {
-                    Log.d(TAG, "contests size=" + response.body().getContests().size());
-                    List<Contest> contestList = response.body().getContests();
-                    contestEntryList = DbUtils.convertToContestEntryType(
-                            contestList,
-                            DbUtils.TYPE_FUTURE_EVENTS
-                    );
-                    addContestsToDatabase(contestEntryList);
-                    setAdapter(contestEntryList);
-                }
-            }
+        WorkManager.getInstance().enqueueUniqueWork("type" + finalContestTypeInt, ExistingWorkPolicy.KEEP, request);
 
-            @Override
-            public void onFailure(@NonNull Call<ApiResponse> call, @NonNull Throwable t) {
-                Log.d(TAG, "failure");
-            }
-        });
+        WorkManager.getInstance().getWorkInfoByIdLiveData(request.getId())
+                .observe(Objects.requireNonNull(getActivity()), new Observer<WorkInfo>() {
+                    @Override
+                    public void onChanged(@Nullable WorkInfo workInfo) {
+                        if (workInfo != null && workInfo.getState().name().equals(WorkInfo.State.FAILED.name())) {
+                            Log.d(TAG, "state -> " + workInfo.getState().name());
+                            Snackbar.make(Objects.requireNonNull(getView()).findViewById(R.id.contest_list_rv), "Check internet connection", Snackbar.LENGTH_SHORT).show();
+                        } else if (workInfo != null && workInfo.getState().isFinished()) {
+                            Log.d(TAG, "data refreshed");
+                            updateList(finalContestTypeInt);
+                        }
+                    }
+                });
     }
 
-    private void getOnGoingEvents() {
-        String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date())
-                + "T"
-                + new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
-        String resourcesRegex = getFavouriteResourcesRegex();
-
-        Call<ApiResponse> response = RestApiClient.getInstance().getOnGoingContests(date, date, resourcesRegex, "end");
-        response.enqueue(new Callback<ApiResponse>() {
-            @Override
-            public void onResponse(@NonNull Call<ApiResponse> call, @NonNull Response<ApiResponse> response) {
-                if (response.body() == null) {
-                    Log.d(TAG, "empty body");
-                } else {
-                    Log.d(TAG, "contests size=" + response.body().getContests().size());
-                    List<Contest> contestList = response.body().getContests();
-                    contestEntryList = DbUtils.convertToContestEntryType(
-                            contestList,
-                            DbUtils.TYPE_ONGOING_EVENTS
-                    );
-                    addContestsToDatabase(contestEntryList);
-                    setAdapter(contestEntryList);
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<ApiResponse> call, @NonNull Throwable t) {
-                Log.d(TAG, "failure");
-            }
-        });
-    }
-
-    private void getPastEvents() {
-        String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date()) + "T00:00:01";
-        String resourcesRegex = getFavouriteResourcesRegex();
-
-        Call<ApiResponse> response = RestApiClient.getInstance().getPastContests(date, resourcesRegex, "-end");
-        response.enqueue(new Callback<ApiResponse>() {
-            @Override
-            public void onResponse(@NonNull Call<ApiResponse> call, @NonNull Response<ApiResponse> response) {
-                if (response.body() == null) {
-                    Log.d(TAG, "empty body");
-                } else {
-                    Log.d(TAG, "contests size=" + response.body().getContests().size());
-                    List<Contest> contestList = response.body().getContests();
-                    contestEntryList = DbUtils.convertToContestEntryType(
-                            contestList,
-                            DbUtils.TYPE_PAST_EVENTS
-                    );
-                    addContestsToDatabase(contestEntryList);
-                    setAdapter(contestEntryList);
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<ApiResponse> call, @NonNull Throwable t) {
-                Log.d(TAG, "failure");
-            }
-        });
-    }
-
-    private void addContestsToDatabase(final List<ContestEntry> contestEntryList) {
+    private void updateList(final int type) {
         MyDiskExecutor.getsInstance().getDiskIO().execute(new Runnable() {
             @Override
             public void run() {
-                mDb.ContestDao().insertContests(contestEntryList);
-            }
-        });
-    }
-
-    private void getContestsByType(final int type) {
-        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-        final boolean prefChanged = sharedPreferences.getBoolean(MainActivity.prefChangedKey, false);
-
-        MyDiskExecutor.getsInstance().getDiskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                if (prefChanged) {
-                    mDb.ContestDao().deleteAllContests();   //clear table
-                    sharedPreferences.edit().putBoolean(MainActivity.prefChangedKey, false).commit();  //  make it false again
-                }
                 final List<ContestEntry> list = mDb.ContestDao().getContestsByType(type);
                 Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if (list.size() == 0) {  // if no data in db, so fetch it from internet
-                            if (type == DbUtils.TYPE_PAST_EVENTS) {
-                                getPastEvents();
-                            } else if (type == DbUtils.TYPE_ONGOING_EVENTS) {
-                                getOnGoingEvents();
-                            } else
-                                getFutureEvents();
+                        setAdapter(list);
+                    }
+                });
+            }
+        });
+    }
+
+    private void setAdapter(List<ContestEntry> list) {
+        ContestListClickListener clickListener = new ContestListClickListener() {
+            @Override
+            public void onContestClick(int id) {
+                // open detail activity
+                Intent intent = new Intent(getActivity(), ContestDetailActivity.class);
+                intent.putExtra(ContestDetailActivity.ID_EXTRA_KEY, id);
+                startActivity(intent);
+            }
+        };
+        adapter = new EventListAdapter(list, mContext, ContestListFragment.this, clickListener);
+        recyclerView.setAdapter(adapter);
+    }
+
+    private void getContestsByType(final int type) {
+        final boolean wasPrefChanged = MainActivity.isPrefChanged;
+        if (wasPrefChanged)
+            MainActivity.isPrefChanged = false;  //  make it false again
+
+        Data data = new Data.Builder().putInt(FreshDataWork.CONTEST_TYPE_KEY, type).putBoolean(FreshDataWork.PREF_CHANGED_KEY, wasPrefChanged).build();
+
+        final OneTimeWorkRequest request = new OneTimeWorkRequest.Builder(FreshDataWork.class)
+                .setInputData(data)
+                .build();
+
+        MyDiskExecutor.getsInstance().getDiskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                final List<ContestEntry> list = mDb.ContestDao().getContestsByType(type);
+
+                Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (list.size() == 0 || wasPrefChanged) {  // if no data in db or pref was changed, fetch it from internet
+                            WorkManager.getInstance().enqueueUniqueWork("ctype" + type, ExistingWorkPolicy.KEEP, request);
+
+                            WorkManager.getInstance().getWorkInfoByIdLiveData(request.getId())
+                                    .observe(Objects.requireNonNull(getActivity()), new Observer<WorkInfo>() {
+                                        @Override
+                                        public void onChanged(@Nullable WorkInfo workInfo) {
+                                            if (workInfo != null && workInfo.getState().name().equals(WorkInfo.State.FAILED.name())) {
+                                                Log.d(TAG, "state -> " + workInfo.getState().name());
+                                                Snackbar.make(Objects.requireNonNull(getView()).findViewById(R.id.contest_list_rv), "Check internet connection", Snackbar.LENGTH_SHORT).show();
+                                            } else if (workInfo != null && workInfo.getState().isFinished()) {
+                                                Log.d(TAG, "data added");
+                                                updateList(type);
+                                            }
+                                        }
+                                    });
                         } else {   // we have data in db, so fetch from here
                             setAdapter(list);
                         }
@@ -253,6 +228,16 @@ public class ContestListFragment extends Fragment {
                 });
             }
         });
+    }
+
+    private void setAPICredentials() {
+        try {
+            String name = getResources().getString(R.string.username);
+            String key = getResources().getString(R.string.key);
+            RestApiClient.setAuthParam(name, key);
+        } catch (Resources.NotFoundException ex) {
+            throw new RuntimeException("please provide username and APIkey");
+        }
     }
 
     //if we hold then drag our finger and then lift up....then dialog won't close
@@ -281,46 +266,6 @@ public class ContestListFragment extends Fragment {
 
         }
     };
-
-    private String getFavouriteResourcesRegex() {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-        Set<String> keySet = sharedPreferences.getAll().keySet();
-        StringBuilder resourceRegex = new StringBuilder();
-        for (String key : keySet) {
-            if (sharedPreferences.getBoolean(key, true)) {
-                resourceRegex.append(key).append("|");
-            }
-        }
-        if (resourceRegex.length() > 0)
-            resourceRegex.deleteCharAt(resourceRegex.length() - 1);   //delete last extra pipe symbol
-        Log.d("Nitin", "resurce regex=" + String.valueOf(resourceRegex));
-
-        return resourceRegex.toString();
-    }
-
-    private void setAPICredentials() {
-        try {
-            String name = getResources().getString(R.string.username);
-            String key = getResources().getString(R.string.key);
-            RestApiClient.setAuthParam(name, key);
-        } catch (Resources.NotFoundException ex) {
-            throw new RuntimeException("please provide username and APIkey");
-        }
-    }
-
-    private void setAdapter(List<ContestEntry> list) {
-        ContestListClickListener clickListener = new ContestListClickListener() {
-            @Override
-            public void onContestClick(int id) {
-                // open detail activity
-                Intent intent = new Intent(getActivity(), ContestDetailActivity.class);
-                intent.putExtra(ContestDetailActivity.ID_EXTRA_KEY, id);
-                startActivity(intent);
-            }
-        };
-        adapter = new EventListAdapter(list, mContext, ContestListFragment.this, clickListener);
-        recyclerView.setAdapter(adapter);
-    }
 
     public Bitmap blurBitmap(Bitmap bitmap) {
 

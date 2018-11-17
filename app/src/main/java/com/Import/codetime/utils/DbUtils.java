@@ -1,10 +1,15 @@
 package com.Import.codetime.utils;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.support.v7.preference.PreferenceManager;
+
 import com.Import.codetime.database.ContestEntry;
 import com.Import.codetime.model.Contest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class DbUtils {
     public static final int TYPE_PAST_EVENTS = 1;
@@ -48,5 +53,20 @@ public class DbUtils {
             }
         }
         return s[0] + "\n" + time[0] + ":" + time[1] + " " + marker;
+    }
+
+    public static String getFavouriteResourcesRegex(Context context) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        Set<String> keySet = sharedPreferences.getAll().keySet();
+        StringBuilder resourceRegex = new StringBuilder();
+        for (String key : keySet) {
+            if (sharedPreferences.getBoolean(key, true)) {
+                resourceRegex.append(key).append("|");
+            }
+        }
+        if (resourceRegex.length() > 0)
+            resourceRegex.deleteCharAt(resourceRegex.length() - 1);   //delete last extra pipe symbol
+
+        return resourceRegex.toString();
     }
 }

@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -20,15 +21,27 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.Import.codetime.work.FetchDataWork;
+import com.Import.codetime.work.FreshDataWork;
+
+import java.util.concurrent.TimeUnit;
+
+import androidx.work.Constraints;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.NetworkType;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
+
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener,
         FragmentChangeListener,
         SharedPreferences.OnSharedPreferenceChangeListener {
 
-    public static final String prefChangedKey = "pref_change_status";
+    public static boolean isPrefChanged = true;
     private SharedPreferences sharedPreferences;
 
     private Toolbar toolbar;
+    private int backPressCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +62,9 @@ public class MainActivity extends AppCompatActivity implements
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
 
+        startPeriodicWork();
+
+        isPrefChanged = initPrefChangedValue();
 
         //initially display home fragment
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -56,18 +72,44 @@ public class MainActivity extends AppCompatActivity implements
         transaction.commit();
     }
 
+    private boolean initPrefChangedValue() {
+        return sharedPreferences.getBoolean(FreshDataWork.PREF_CHANGED_KEY, true);
+    }
+
+    private void startPeriodicWork() {
+        Constraints constraints = new Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build();
+
+        PeriodicWorkRequest syncDataWork = new PeriodicWorkRequest.Builder(
+                FetchDataWork.class,
+                24,
+                TimeUnit.HOURS)
+                .setConstraints(constraints)
+                .build();
+        WorkManager.getInstance().enqueueUniquePeriodicWork("fetch data", ExistingPeriodicWorkPolicy.KEEP, syncDataWork);
+
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
+        sharedPreferences.edit().putBoolean(FreshDataWork.PREF_CHANGED_KEY, isPrefChanged).commit();
     }
 
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        int count = getSupportFragmentManager().getBackStackEntryCount();
+
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+        } else if (count == 0 && backPressCount == 0) {
+            Snackbar.make(drawer, "Press again to exit", Snackbar.LENGTH_SHORT).show();
+            backPressCount++;
         } else {
+            backPressCount = 0;
             super.onBackPressed();
         }
     }
@@ -116,6 +158,10 @@ public class MainActivity extends AppCompatActivity implements
         if (fragment != null){
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+
+            if (fragment instanceof SettingsFragment)
+                transaction.addToBackStack("settings");
+
             transaction.replace(R.id.content_frame,fragment);
             transaction.commit();
 
@@ -147,6 +193,6 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        sharedPreferences.edit().putBoolean(prefChangedKey, true).commit();
+        isPrefChanged = true;
     }
 }

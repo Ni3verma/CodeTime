@@ -23,4 +23,7 @@ public interface ContestDao {
 
     @Query("delete from contest")
     void deleteAllContests();
+
+    @Query("delete from contest where eventType=:type")
+    void deleteContestsByType(int type);
 }
