@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.Import.codetime.database.ContestEntry;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -48,14 +49,40 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.MyVi
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         ContestEntry event = eList.get(position);
-        holder.orgLogo.setImageResource(R.drawable.ic_launcher_background);
+        Picasso.get().load(getImageResouceId(event.getResourceName())).into(holder.orgLogo);
         holder.eventName.setText(event.getName());
         holder.orgName.setText(event.getResourceName());
 
         holder.startDate = event.getStartDate();
         holder.endDate = event.getEndDate();
+        holder.resName = event.getResourceName();
 
         setAnimation(holder.itemView);
+    }
+
+    private int getImageResouceId(String res) {
+        res = res.split("com")[0];
+        int id;
+        switch (res) {
+            case "codechef.":
+                id = R.drawable.codechef_logo;
+                break;
+            case "codeforces.":
+                id = R.drawable.codeforces_logo;
+                break;
+            case "hackerearth.":
+                id = R.drawable.hackerearth_logo;
+                break;
+            case "hackerrank.":
+                id = R.drawable.hackerrank_logo;
+                break;
+            case "topcoder.":
+                id = R.drawable.topcoder_logo;
+                break;
+            default:
+                id = R.drawable.ic_launcher_background;
+        }
+        return id;
     }
 
     private void setAnimation(View view) {
@@ -80,7 +107,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.MyVi
     class MyViewHolder extends RecyclerView.ViewHolder {
         TextView orgName, eventName;
         ImageView orgLogo;
-        String startDate, endDate;
+        String startDate, endDate, resName;
         private ContestListClickListener contestListClickListener;
         private boolean wasClicked = true;
         View.OnTouchListener touchListener=new View.OnTouchListener() {
@@ -113,6 +140,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.MyVi
                     eventName_dialog.setText(eventName.getText());
                     startDate_dialog.setText(startDate);
                     endDate_dialog.setText(endDate);
+                    Picasso.get().load(getImageResouceId(resName)).into(logo_dialog);
 
                     mFragment.blurBackground();
 

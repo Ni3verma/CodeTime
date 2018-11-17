@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
 
-            if (fragment instanceof SettingsFragment)
+            if (fragment instanceof SettingsFragment && getSupportFragmentManager().getBackStackEntryCount() == 0)
                 transaction.addToBackStack("settings");
 
             transaction.replace(R.id.content_frame,fragment);

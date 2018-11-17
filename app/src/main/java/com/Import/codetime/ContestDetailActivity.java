@@ -6,11 +6,13 @@ import android.os.Bundle;
 import android.provider.CalendarContract;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.Import.codetime.database.AppDatabase;
 import com.Import.codetime.database.ContestEntry;
 import com.Import.codetime.database.MyDiskExecutor;
+import com.squareup.picasso.Picasso;
 
 import java.util.GregorianCalendar;
 
@@ -36,14 +38,41 @@ public class ContestDetailActivity extends AppCompatActivity {
                         TextView name = findViewById(R.id.name);
                         TextView startDate = findViewById(R.id.start_date);
                         TextView endDate = findViewById(R.id.end_date);
+                        ImageView poster = findViewById(R.id.poster);
 
                         name.setText(contest.getName());
                         startDate.setText(String.format("Start date\n%s", contest.getStartDate()));
                         endDate.setText(String.format("End date\n%s", contest.getEndDate()));
+                        Picasso.get().load(getPosterResouceId(contest.getResourceName())).into(poster);
                     }
                 });
             }
         });
+    }
+
+    private int getPosterResouceId(String res) {
+        res = res.split("com")[0];
+        int id;
+        switch (res) {
+            case "codechef.":
+                id = R.drawable.codechef_poster;
+                break;
+            case "codeforces.":
+                id = R.drawable.codeforces_poster;
+                break;
+            case "hackerearth.":
+                id = R.drawable.hackerearth_poster;
+                break;
+            case "hackerrank.":
+                id = R.drawable.hackerrank_poster;
+                break;
+            case "topcoder.":
+                id = R.drawable.topcoder_poster;
+                break;
+            default:
+                id = R.drawable.ic_launcher_background;
+        }
+        return id;
     }
 
     public void addToCalender(View view) {

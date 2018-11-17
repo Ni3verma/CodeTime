@@ -8,11 +8,12 @@
 
     <ImageView
         android:id="@+id/poster"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="150dp"
         android:layout_marginTop="8dp"
         android:contentDescription="@string/poster_iv_cd"
         android:src="@drawable/ic_browser"
+        android:scaleType="fitXY"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -47,8 +48,8 @@
             style="@style/ContestDetailStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/whiteText"
-            android:textSize="20sp"
+            android:textSize="22sp"
+            android:textStyle="bold"
             tools:text="Week Code 35" />
     </android.support.v7.widget.CardView>
 
@@ -68,8 +69,7 @@
         android:layout_marginTop="16dp"
         android:paddingStart="24dp"
         android:paddingEnd="24dp"
-        android:textColor="@color/whiteText"
-        android:textSize="14sp"
+        android:textSize="16sp"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardView"
@@ -84,8 +84,7 @@
         android:layout_marginEnd="8dp"
         android:paddingStart="24dp"
         android:paddingEnd="24dp"
-        android:textColor="@color/whiteText"
-        android:textSize="14sp"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/cardView"
