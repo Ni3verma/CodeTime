@@ -9,8 +9,8 @@ import com.Import.codetime.ContestDetailActivity;
 import com.Import.codetime.R;
 import com.Import.codetime.database.AppDatabase;
 import com.Import.codetime.database.FavouriteEntry;
+import com.Import.codetime.database.MyDiskExecutor;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
@@ -22,34 +22,22 @@ public class ListViewWidgetService extends RemoteViewsService {
         final List<FavouriteEntry>[] list = new List[1];
         final CountDownLatch latch = new CountDownLatch(1);
 
-//        appDatabase=AppDatabase.getInstance(this.getApplicationContext());
-//        MyDiskExecutor.getsInstance().getDiskIO().execute(new Runnable() {
-//            @Override
-//            public void run() {
-//                list[0] =appDatabase.FavouriteDao().getAllFavContests();
-//                latch.countDown();
-//            }
-//        });
-//
-//        try {
-//            latch.await();
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-        list[0] = getFakeData();
+        appDatabase = AppDatabase.getInstance(this.getApplicationContext());
+        MyDiskExecutor.getsInstance().getDiskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                list[0] = appDatabase.FavouriteDao().getAllFavContests();
+                latch.countDown();
+            }
+        });
+
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         return new AppWidgetListView(list[0], this.getApplicationContext());
-    }
-
-    private List<FavouriteEntry> getFakeData() {
-        List<FavouriteEntry> list = new ArrayList<>();
-        list.add(new FavouriteEntry(2, "code week 35", "hackerrank1"));
-        list.add(new FavouriteEntry(2, "code week 35", "hackerrank1"));
-        list.add(new FavouriteEntry(2, "code week 35", "hackerrank1"));
-        list.add(new FavouriteEntry(2, "code week 35", "hackerrank1"));
-        list.add(new FavouriteEntry(2, "code week 35", "hackerrank1"));
-
-        return list;
     }
 
     class AppWidgetListView implements RemoteViewsService.RemoteViewsFactory {
@@ -69,6 +57,15 @@ public class ListViewWidgetService extends RemoteViewsService {
 
         @Override
         public void onDataSetChanged() {
+            MyDiskExecutor.getsInstance().getDiskIO().execute(new Runnable() {
+                @Override
+                public void run() {
+                    List<FavouriteEntry> temp = appDatabase.FavouriteDao().getAllFavContests();
+                    contestList.clear();
+                    contestList.addAll(temp);
+                    contestList.add(new FavouriteEntry(4, "a", "b"));
+                }
+            });
 
         }
 

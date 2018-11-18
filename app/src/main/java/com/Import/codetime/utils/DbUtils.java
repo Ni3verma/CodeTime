@@ -37,7 +37,7 @@ public class DbUtils {
         return contestEntryList;
     }
 
-    private static String getFormattedDate(String date) {
+    public static String getFormattedDate(String date) {
         String s[] = date.split("T"); //as response has time in this format yyyy:MM:ddThh:mm:ss, so we can split date and time at T. now s[0] contains date and s[1] contains time in 24 hour format
 
         String time[] = s[1].split(":");
