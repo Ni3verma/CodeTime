@@ -11,18 +11,21 @@ public class FavouriteEntry {
 
     private int contestId;
     private String name;
+    private String resName;
 
     @Ignore
-    public FavouriteEntry(int contestId, String name) {
+    public FavouriteEntry(int contestId, String name, String resName) {
         this.contestId = contestId;
         this.name = name;
+        this.resName = resName;
     }
 
-    public FavouriteEntry(int id, int contestId, String name) {
+    public FavouriteEntry(int id, int contestId, String name, String resName) {
 
         this.id = id;
         this.contestId = contestId;
         this.name = name;
+        this.resName = resName;
     }
 
     public int getId() {
@@ -47,5 +50,13 @@ public class FavouriteEntry {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getResName() {
+        return resName;
+    }
+
+    public void setResName(String resName) {
+        this.resName = resName;
     }
 }
