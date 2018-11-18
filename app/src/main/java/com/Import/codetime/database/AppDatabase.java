@@ -9,7 +9,7 @@ import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-@Database(entities = {ContestEntry.class}, version = 1, exportSchema = false)
+@Database(entities = {ContestEntry.class, FavouriteEntry.class}, version = 1, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     private static final Object LOCK = new Object();
     private static final String DATABASE_NAME = "codetime";
@@ -25,6 +25,8 @@ public abstract class AppDatabase extends RoomDatabase {
     }
 
     public abstract ContestDao ContestDao();
+
+    public abstract FavouriteDao FavouriteDao();
 
     @NonNull
     @Override
