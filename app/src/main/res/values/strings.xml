@@ -20,5 +20,7 @@
     <string name="pref_hackerearth_key">hackerearth.com</string>
     <string name="pref_hackerrank_key">hackerrank.com</string>
     <string name="pref_topcoder_key">topcoder.com</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 
 </resources>
