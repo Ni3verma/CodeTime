@@ -40,10 +40,12 @@ public class ContestDetailActivity extends AppCompatActivity {
                         TextView endDate = findViewById(R.id.end_date);
                         ImageView poster = findViewById(R.id.poster);
 
-                        name.setText(contest.getName());
-                        startDate.setText(String.format("Start date\n%s", contest.getStartDate()));
-                        endDate.setText(String.format("End date\n%s", contest.getEndDate()));
-                        Picasso.get().load(getPosterResouceId(contest.getResourceName())).into(poster);
+                        if (contest != null) {
+                            name.setText(contest.getName());
+                            startDate.setText(String.format("Start date\n%s", contest.getStartDate()));
+                            endDate.setText(String.format("End date\n%s", contest.getEndDate()));
+                            Picasso.get().load(getPosterResouceId(contest.getResourceName())).into(poster);
+                        }
                     }
                 });
             }
