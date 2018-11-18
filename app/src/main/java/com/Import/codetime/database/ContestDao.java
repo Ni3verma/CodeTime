@@ -18,7 +18,7 @@ public interface ContestDao {
     @Query("select * from contest where eventType=:type")
     List<ContestEntry> getContestsByType(int type);
 
-    @Query("select * from contest where id=:id")
+    @Query("select * from contest where contestId=:id")
     ContestEntry getContestById(int id);
 
     @Query("delete from contest")

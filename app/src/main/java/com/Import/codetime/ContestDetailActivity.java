@@ -17,7 +17,7 @@ import com.squareup.picasso.Picasso;
 import java.util.GregorianCalendar;
 
 public class ContestDetailActivity extends AppCompatActivity {
-    public static final String ID_EXTRA_KEY = "idKey";
+    public static final String ID_EXTRA_KEY = "contestIdKey";
     ContestEntry contest;
 
     @Override

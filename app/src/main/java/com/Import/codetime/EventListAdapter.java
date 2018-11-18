@@ -158,7 +158,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.MyVi
                     hideDialog();
                     if (wasClicked) {
                         //Log.d("Nitin","it was a click");
-                        contestListClickListener.onContestClick(eList.get(getAdapterPosition()).getId());
+                        contestListClickListener.onContestClick(eList.get(getAdapterPosition()).getContestId());
                     }
                     return false;
                 }
