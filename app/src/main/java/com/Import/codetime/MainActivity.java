@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements
                 startActivity(intent);
                 break;
             case R.id.nav_credits:
-                Toast.makeText(this, "to be implemented", Toast.LENGTH_SHORT).show();
+                fragment = new CreditsFragment();
                 break;
             case R.id.nav_share_app:
                 Toast.makeText(this, "app will be opened in play store", Toast.LENGTH_SHORT).show();

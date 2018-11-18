@@ -23,4 +23,6 @@
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
 
+    <string name="credits_text"><b>CodeTime</b> is completely free and <i>open source</i> as this app works only because of <b>Contest List API</b> which is also open source.A big thanks to them (https://clist.by).Check <b>git project</b> here(https://github.com/Ni3verma/CodeTime) and feel free to <i>contribute</i>.\n\nCodeTime uses following <b>libraries</b>:\n1) Awesome android support libraries by google.\n2) Retrofit, Picasso, Room, Work\n3) circle imageView (https://github.com/hdodenhof/CircleImageView)\n\nCodeTime uses <b>logo</b> of some famous platforms such as Hackerrank, Hackerearth, Codeforces, topCoder, Codechef\n\nVarious <b>images</b> are downloaded from freepik.com, canva.com, shutterstock.com, uigradients.com, pixabay.com\n\nAnd finally a big thanks to stackoverflow community and awesome tutorials on youtube and blogs on medium and my udacity android dev nanodegree.\n\nI respect intellectual property of others, and by publishing this app no copyright nor trademark infringement of any sort is intended. If you feel that this app infringes on any of your copyright or trademark, please feel free to mail the issue(canvas.nv@gmail.com)</string>
+
 </resources>
