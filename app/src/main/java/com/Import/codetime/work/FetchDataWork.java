@@ -15,7 +15,6 @@ import com.Import.codetime.database.AppDatabase;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
-//todo: change this class. it is just to check periodic work
 public class FetchDataWork extends Worker {
     Context mContext;
 

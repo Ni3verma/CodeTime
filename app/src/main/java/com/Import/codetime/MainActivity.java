@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
 
         startPeriodicWork();
+        setUpSharedPrefs();
 
         isPrefChanged = initPrefChangedValue();
 
@@ -70,6 +71,19 @@ public class MainActivity extends AppCompatActivity implements
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.content_frame, new HomeFragment());
         transaction.commit();
+    }
+
+    private void setUpSharedPrefs() {
+        if (sharedPreferences.getInt("count", 0) == 0) {  //app opened for the first time
+            //default initial values
+            sharedPreferences.edit().putBoolean(getString(R.string.pref_codechef_key), false).commit();
+            sharedPreferences.edit().putBoolean(getString(R.string.pref_codeforces_key), false).commit();
+            sharedPreferences.edit().putBoolean(getString(R.string.pref_hackerearth_key), true).commit();
+            sharedPreferences.edit().putBoolean(getString(R.string.pref_hackerrank_key), true).commit();
+            sharedPreferences.edit().putBoolean(getString(R.string.pref_topcoder_key), false).commit();
+
+            sharedPreferences.edit().putInt("count", 1).commit();    //so that this method never run again
+        }
     }
 
     private boolean initPrefChangedValue() {
@@ -174,7 +188,6 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void openListFragment(Fragment fragment, ImageView imageView) {
-        //TODO: clear selected item in nav drawer
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager()
                 .beginTransaction()

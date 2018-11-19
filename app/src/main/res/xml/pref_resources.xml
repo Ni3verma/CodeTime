@@ -16,12 +16,12 @@
         android:key="@string/pref_hackerearth_key"
         android:title="Hackerearth" />
     <CheckBoxPreference
-        android:defaultValue="false"
+        android:defaultValue="true"
         android:icon="@drawable/hackerrank_logo"
         android:key="@string/pref_hackerrank_key"
         android:title="Hackerrank" />
     <CheckBoxPreference
-        android:defaultValue="true"
+        android:defaultValue="false"
         android:icon="@drawable/topcoder_logo"
         android:key="@string/pref_topcoder_key"
         android:title="Topcoder" />

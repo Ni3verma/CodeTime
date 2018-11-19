@@ -60,7 +60,7 @@ public class DbUtils {
         Set<String> keySet = sharedPreferences.getAll().keySet();
         StringBuilder resourceRegex = new StringBuilder();
         for (String key : keySet) {
-            if (sharedPreferences.getBoolean(key, true)) {
+            if (!key.equals("count") && sharedPreferences.getBoolean(key, true)) {  //count is the only pref which is int and not boolean
                 resourceRegex.append(key).append("|");
             }
         }
