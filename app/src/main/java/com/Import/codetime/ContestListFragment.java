@@ -182,6 +182,8 @@ public class ContestListFragment extends Fragment {
                 startActivity(intent);
             }
         };
+        if (list.size() == 0)
+            recyclerView.setBackground(getResources().getDrawable(R.drawable.empty_view_rv));
         adapter = new EventListAdapter(list, mContext, ContestListFragment.this, clickListener);
         recyclerView.setAdapter(adapter);
     }
