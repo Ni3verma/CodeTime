@@ -28,6 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
+                android:contentDescription="@string/past_image_cd"
                 android:src="@drawable/past_sand_clock" />
 
             <TextView
@@ -41,7 +42,7 @@
                 android:textColor="@color/whiteText"
                 android:textSize="25sp"
                 android:textStyle="bold"
-                android:text="Past Events" />
+                android:text="@string/past_events" />
         </FrameLayout>
     </android.support.v7.widget.CardView>
 
@@ -66,6 +67,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
+                android:contentDescription="@string/ongoing_image_cd"
                 android:src="@drawable/present_sand_clock" />
 
             <TextView
@@ -79,7 +81,7 @@
                 android:textColor="@color/whiteText"
                 android:textSize="25sp"
                 android:textStyle="bold"
-                android:text="OnGoing Events" />
+                android:text="@string/ongoing_events" />
         </FrameLayout>
 
     </android.support.v7.widget.CardView>
@@ -105,6 +107,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="center"
+                android:contentDescription="@string/future_image_cd"
                 android:src="@drawable/future_man_stop_clock" />
 
             <TextView
@@ -118,7 +121,7 @@
                 android:textColor="@color/whiteText"
                 android:textSize="25sp"
                 android:textStyle="bold"
-                android:text="UpComing Events" />
+                android:text="@string/upcoming_events" />
         </FrameLayout>
 
     </android.support.v7.widget.CardView>

@@ -27,6 +27,7 @@
                 android:scaleType="centerCrop"
                 android:transitionName="@string/image_type_transition"
                 app:layout_collapseMode="parallax"
+                android:contentDescription="@string/image_type_cd"
                 tools:src="@drawable/past_sand_clock" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
@@ -44,6 +45,7 @@
             android:id="@+id/bg_blur_iv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:contentDescription="@string/blur_background_image_cd"
             android:scaleType="centerCrop" />
 
         <android.support.v7.widget.RecyclerView
@@ -61,7 +63,7 @@
         android:id="@+id/refresh_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
+        android:layout_gravity="bottom|end"
         android:layout_margin="8dp"
         android:src="@drawable/ic_refresh"
         app:fabSize="normal" />

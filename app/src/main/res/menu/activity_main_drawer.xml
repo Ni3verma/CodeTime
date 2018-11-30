@@ -8,41 +8,41 @@
             android:id="@+id/nav_home"
             android:checked="true"
             android:icon="@drawable/ic_home"
-            android:title="Home" />
+            android:title="@string/nav_title_home" />
         <item
             android:id="@+id/nav_settings"
             android:icon="@drawable/ic_menu_manage"
-            android:title="Settings" />
+            android:title="@string/nav_title_settings" />
     </group>
 
-    <item android:title="Open Source">
+    <item android:title="@string/nav_title_open_source">
         <menu>
             <!--todo: change icon-->
             <item
                 android:id="@+id/nav_github"
                 android:icon="@drawable/ic_github"
-                android:title="Github" />
+                android:title="@string/nav_title_github" />
             <item
                 android:id="@+id/nav_credits"
                 android:icon="@drawable/ic_credits"
-                android:title="Credits" />
+                android:title="@string/nav_title_credits" />
         </menu>
     </item>
 
-    <item android:title="Communicate">
+    <item android:title="@string/nav_title_communicate">
         <menu>
             <item
                 android:id="@+id/nav_share_app"
                 android:icon="@drawable/ic_menu_share"
-                android:title="Share App" />
+                android:title="@string/nav_title_share_app" />
             <item
                 android:id="@+id/nav_feedback"
                 android:icon="@drawable/ic_feedback"
-                android:title="Feedback" />
+                android:title="@string/nav_title_feedback" />
             <item
                 android:id="@+id/nav_rate_app"
                 android:icon="@drawable/ic_stars"
-                android:title="Rate app" />
+                android:title="@string/nav_title_rate_app" />
         </menu>
     </item>
 
